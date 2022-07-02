@@ -62,6 +62,7 @@ def fazer_login():
                 limpar()
                 print("Logado com sucesso!")
                 sleep(3)
+                break
             else:
                 limpar()
                 print("Senha incorreta!")
@@ -75,7 +76,35 @@ def fazer_login():
             
 
 def cadastrar_user():
-    pass
+    while True:
+        limpar()
+        username = str(input("""
+          Cadastrar user
+───────────────────────────────────
+
+  Username: """))
+        if username not in cadastrados:
+            while True:   
+                limpar()
+                senha = str(input(f"""
+          Cadastrar user
+───────────────────────────────────
+
+  Username: {username}
+  Senha: """))
+                if len(senha) < 3 or senha == '   ':
+                    limpar()
+                    print("Digite uma senha com mais caracteres!")
+                    sleep(2)
+                else:
+                    mod_database(username, senha)
+                    print("Usúario cadastrado com sucesso!!")
+                    sleep(2)
+                    break
+            break
+        else:
+            limpar()
+            print("Usuário já possui cadastro!!")
 
 #Checa e salva todos os dados na base de dados
 check_database()
