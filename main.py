@@ -13,12 +13,12 @@ def check_database():
     global cadastrados
     #caso já possua o arquivo de cadastrados
     try:
-        arquivo_login = open("data/cadastrados.pck", "rb")
+        arquivo_login = open("cadastrados.pck", "rb")
         cadastrados = load(arquivo_login)
         arquivo_login.close()
     #caso não possua o arquivo de cadastrados
     except:
-        arquivo_login = open("data/cadastrados.pck", "wb")
+        arquivo_login = open("cadastrados.pck", "wb")
         cadastrados = {
             'Admin' : '123'
         }
@@ -28,7 +28,7 @@ def check_database():
 #Modifica/adiciona os dados na base de dados
 def mod_database(key, value):
     global cadastrados
-    arquivo_login = open("data/cadastrados.pck", "wb")
+    arquivo_login = open("cadastrados.pck", "wb")
     cadastrados[key] = value
     dump(cadastrados, arquivo_login)
     arquivo_login.close()
@@ -36,7 +36,7 @@ def mod_database(key, value):
 #Apaga itens da base de dados
 def delete_data(key):
     global cadastrados
-    arquivo_login = open("data/cadastrados.pck" , "wb")
+    arquivo_login = open("cadastrados.pck" , "wb")
     del cadastrados[f'{key}']
     dump(cadastrados, arquivo_login)
     arquivo_login.close()
@@ -76,16 +76,6 @@ def fazer_login():
 
 def cadastrar_user():
     pass
-# com a base de dados preparada é só criar toda a logica por trás
-# quando voltar dê uma lida no código para refrescar 
-# tente criar uma interface 
-# tente fazer algo bonitinho
-'''
-- Fazer Cadastro
-- Verificar Cadastro
-- Fazer Login
-- Remover login
-'''
 
 #Checa e salva todos os dados na base de dados
 check_database()
