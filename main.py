@@ -81,114 +81,181 @@ def deslogar():
     mod_database2('status' , 'Não logado')
     mod_database2('user_atual' , 'Nenhum!')
 
+def aba_admin():
+    while True:
+        limpar()
+        var = str(input('''
+             Aba ADMIN  ( ͡° ͜ʖ ͡°)
+┌──────────────────────────────────────────┐
+│                                          │
+│ 1  ───► Aba de admin                     │
+│                                          │
+│ 2 ────► Aba normal                       │
+│                                          | 
+│                                          | 
+| 0 ────► Sair                             |
+└──────────────────────────────────────────┘ 
+
+
+────► '''))
+        if var == "1":
+            while True:
+                limpar()
+                print("""
+             Aba ADMIN  ( ͡° ͜ʖ ͡°)
+┌──────────────────────────────────────────┐
+│                                          │
+│ 1  ───► Ver user e senhas                │
+│                                          │
+│ 0 ────► Sair                             │
+│                                          │
+└──────────────────────────────────────────┘ 
+
+
+""")
+                var = str(input("────► "))
+                if var == "1":
+                    limpar()
+                    lista_user = list(cadastrados.keys())
+                    lista_senha = list(cadastrados.values())
+                    for i in range(len(lista_user)):
+                        print(f'=============================\n\nUser: {lista_user[i]}\nSenha: {lista_senha[i]}\n')
+                        sleep(0.1)
+                    print('=============================')
+                    input('')
+                elif var == "0":
+                    break
+        elif var == "2":
+            menu_login()
+        elif var == "0":
+            break
+
 #Menu 
 def menu_login():
-    if database['status'] != 'Não logado':
-        while True and database['status'] != 'Não logado':
-            limpar()
-            print("""
-                   Menu
+    loop_1 = True
+    loop_senha_nova = True
+    while True and loop_1 == True:
+        if database['status'] != 'Não logado':
+            while True and database['status'] != 'Não logado':
+                limpar()
+                print("""
+                       Menu
+        ───────────────────────────────────
+
+           1  ────► Ver pessoas cadastradas
+
+           2  ────► Trocar senha do user atual
+
+           3  ────► Remover um usuário 
+
+           0  ────► Sair
+
+        """)
+                var = str(input("────► "))
+                if var == "1":
+                    limpar()
+                    lista_cadastrados = list(cadastrados.keys())
+                    for i in lista_cadastrados:
+                        print("- ", f"'{i}'")
+                        sleep(0.1)
+                    input('')
+                elif var == "2":
+                    while True and loop_senha_nova == True:
+                        limpar()
+                        print("Você tem certeza que deseja trocar a senha?")
+                        var = str(input("\n1 ───► Sim\n2 ───► Não\n\n───► "))
+                        if var == '1':
+                            limpar()
+                            senha = str(input(f"""
+            Digite a senha atual
     ───────────────────────────────────
 
-       1  ────► Ver pessoas cadastradas
-
-       2  ────► Trocar senha do user atual
-       
-       3  ────► Remover um usuário 
-
-       0  ────► Sair
-
-    """)
-            var = str(input("────► "))
-            if var == "1":
-                limpar()
-                lista_cadastrados = list(cadastrados.keys())
-                for i in lista_cadastrados:
-                    print("- ", f"'{i}'")
-                    sleep(0.1)
-                input('')
-            elif var == "2":
-                loop_senha_nova = True
-                while True and loop_senha_nova == True:
-                    limpar()
-                    print("Você tem certeza que deseja trocar a senha?")
-                    var = str(input("\n1 ───► Sim\n2 ───► Não\n\n───► "))
-                    if var == '1':
-                        while True:
-                            limpar()
-                            senha_nova = str(input("Nova senha: "))
-                            if senha_nova == cadastrados[f'{database["user_atual"]}']:
-                                limpar()
-                                print("A senha não pode ser igual a atual!")
-                                input('')
-                                break
-                            elif len(senha_nova) < 3 or senha_nova.isspace():
-                                limpar()
-                                print("A senha deve ter mais caracteres!")
-                                input('')
-                                break
-                            elif len(senha_nova) > 30:
-                                limpar()
-                                print("A senha não pode possuir mais de 30 caracteres!")
-                                input('')
-                            else:
-                                mod_database(f'{database["user_atual"]}' , f'{senha_nova}')
-                                limpar()
-                                print(f"Senha de {database['user_atual']} alterada com sucesso!")
-                                input('')
-                                loop_senha_nova = False
-                                break
-                                
-                    elif var == '2':
-                        break
-            elif var == "3":
-                while True:
-                    limpar()
-                    login = str(input("""
- Faça o login para apagar usuário
-───────────────────────────────────
-
-  Login: """))
-                    if login in cadastrados:
-                        limpar()
-                        senha = str(input(f"""
-           Fazer Login
-───────────────────────────────────
-
-  Login: {login}
-  Senha: """)) 
-                        if senha == cadastrados[f'{login}']:
-                            limpar()
-                            while True:
-                                print("Você tem certeza que deseja excluir esse usuário?")
-                                var = input('\n1 ──► Sim\n2 ──► Não\n\n ──► ')
-                                if var == '1':
-                                    delete_data(login)
+      Login: {database['user_atual']}
+      Senha: """)) 
+                            if senha == cadastrados[database['user_atual']]:
+                                while True:
                                     limpar()
-                                    print('Usuário deletado com sucesso!')
-                                    if database['user_atual'] == login:
-                                        deslogar()
-                                    input('')
-                                    break
-                                elif var == "2":
-                                    break
+                                    senha_nova = str(input("Nova senha: "))
+                                    if senha_nova == cadastrados[f'{database["user_atual"]}']:
+                                        limpar()
+                                        print("A senha não pode ser igual a atual!")
+                                        input('')
+                                        break
+                                    elif len(senha_nova) < 3 or senha_nova.isspace():
+                                        limpar()
+                                        print("A senha deve ter mais caracteres!")
+                                        input('')
+                                        break
+                                    elif len(senha_nova) > 30:
+                                        limpar()
+                                        print("A senha não pode possuir mais de 30  caracteres!")
+                                        input('')
+                                    else:
+                                        mod_database(f'{database["user_atual"]}' , f'{senha_nova}')
+                                        limpar()
+                                        print(f"Senha de {database['user_atual']} alterada  com  sucesso!")
+                                        input('')
+                                        loop_senha_nova = False
+                                        break
+                            else:
+                                limpar()
+                                print("Acesso negado!")
+                                input('')
+                        elif var == '2':
+                            loop_senha_nova = False
+                            break
+                elif var == "3":
+                    while True:
+                        limpar()
+                        login = str(input("""
+     Faça o login para apagar usuário
+    ───────────────────────────────────
+
+      Login: """))
+                        if login in cadastrados:
+                            limpar()
+                            senha = str(input(f"""
+               Fazer Login
+    ───────────────────────────────────
+
+      Login: {login}
+      Senha: """)) 
+                            if senha == cadastrados[f'{login}']:
+                                while True:
+                                    limpar()
+                                    print("Você tem certeza que deseja excluir esse usuário?")
+                                    var = input('\n1 ──► Sim\n2 ──► Não\n\n ──► ')
+                                    if var == '1':
+                                        delete_data(login)
+                                        limpar()
+                                        print('Usuário deletado com sucesso!')
+                                        if database['user_atual'] == login:
+                                            deslogar()
+                                        input('')
+                                        break
+                                    elif var == "2":
+                                        break
+                            else:
+                                limpar()
+                                print("Senha incorreta!")
+                                input('')
+                                break
                         else:
                             limpar()
-                            print("Senha incorreta!")
+                            print("Usuário não cadastrado")   
                             input('')
-                            break
-                    else:
-                        limpar()
-                        print("Usuário não cadastrado")   
-                        input('')
-                        break  
-                    break              
-            elif var == "0":
+                            break  
+                        break              
+                elif var == "0":
+                    loop_1 = False
+                    break
+        else:
+            limpar()
+            print("Você precisa estar logado para entrar!")
+            input('')
+            fazer_login()
+            if database['user_atual'] == "Nenhum!":
                 break
-    else:
-        limpar()
-        print("Você precisa estar logado para entrar!")
-        input('')
 
 #Faz o usuario logar
 def fazer_login():
@@ -272,14 +339,24 @@ def cadastrar_user():
 #Checa e salva todos os dados na base de dados
 check_database()
 
+
+
+
 #loop principal
 while True:
+    if database['status'] == 'Não logado':
+        status = Fore.LIGHTRED_EX + database['status'] + Fore.LIGHTWHITE_EX + ''
+    elif database['status'] == 'Logado':
+        status = Fore.LIGHTGREEN_EX + database['status']  + Fore.LIGHTWHITE_EX + ''  
+    user_atual_status = Fore.LIGHTCYAN_EX + database['user_atual']  + Fore.LIGHTWHITE_EX + ''
+    
+    
     limpar()
     print(f"""        
 ───────────────────────────────────          
-Status: {database['status']}         
+Status: {status}         
 ───────────────────────────────────
-User atual: {database['user_atual']}
+User atual: {user_atual_status}
 ───────────────────────────────────
 
         Entrar no sistema
@@ -298,7 +375,10 @@ User atual: {database['user_atual']}
 """)
     var = str(input("───► "))
     if var == "1":
-        menu_login()
+        if database['user_atual'] == 'Admin':
+            aba_admin()
+        else:
+            menu_login()
     elif var == "2":
         fazer_login()
     elif var == "3":
