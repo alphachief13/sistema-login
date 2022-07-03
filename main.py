@@ -14,24 +14,35 @@ def limpar():
 
 #Checa a base de dados
 def check_database():
-    global cadastrados, user_status, user_atual
+    global cadastrados, database
     #caso já possua o arquivo de cadastrados
     try:
         arquivo_login = open("cadastrados.pck", "rb")
         cadastrados = load(arquivo_login)
         arquivo_login.close()
+        
+        arquivo_database = open('database.pck' , 'rb')
+        database = load(arquivo_database)
+        arquivo_database.close()
+        
     #caso não possua o arquivo de cadastrados
     except:
         arquivo_login = open("cadastrados.pck", "wb")
         cadastrados = {
             'Admin' : '123',
-            'user_status' : Fore.LIGHTRED_EX + 'Não logado'
+            
         }
         dump(cadastrados, arquivo_login)
         arquivo_login.close()
-        user_atual = '[VAZIO]'
         
-
+        arquivo_database = open('database.pck' , 'wb')
+        database = {
+            'status' : 'Não logado',
+            
+        }
+        dump(database, arquivo_database)
+        arquivo_database.close()
+        
 #Modifica/adiciona os dados na base de dados
 def mod_database(key, value):
     global cadastrados
@@ -39,7 +50,14 @@ def mod_database(key, value):
     cadastrados[key] = value
     dump(cadastrados, arquivo_login)
     arquivo_login.close()
-    
+
+def mod_database2(key, value):
+    global database
+    arquivo_database = open("database.pck" , "wb")
+    database[key] = value 
+    dump(database, arquivo_database)
+    arquivo_database.close()
+
 #Apaga itens da base de dados
 def delete_data(key):
     global cadastrados
@@ -48,14 +66,47 @@ def delete_data(key):
     dump(cadastrados, arquivo_login)
     arquivo_login.close()
     
-def menu_logados():
-    print("""
+def delete_data2(key):
+    global database 
+    arquivo_database = open("database.pck" , "wb")
+    del database[f'{key}']
+    dump(database, arquivo_database)
+    arquivo_database.close()
 
-""")
-    
+def menu_login():
+    if database['status'] != 'Não logado':
+        while True:
+            limpar()
+            print("""
+                   Menu
+    ───────────────────────────────────
+
+       1  ────► Ver pessoas cadastradas
+
+       2  ────► Trocar senha do user atual
+
+       0  ────► Sair
+
+    """)
+            var = str(input("────► "))
+            if var == "1":
+                limpar()
+                lista_cadastrados = list(cadastrados.keys())
+                for i in lista_cadastrados:
+                    print("- ", f"'{i}'")
+                    sleep(0.1)
+                input('')
+            elif var == "2":
+                pass
+            elif var == "0":
+                break
+    else:
+        limpar()
+        print("Você precisa estar logado para entrar!")
+        input('')
+
 #Faz o usuario logar
 def fazer_login():
-    global user_atual
     while True:
         limpar()
         login = str(input("""
@@ -73,20 +124,19 @@ def fazer_login():
   Senha: """)) 
             if senha == cadastrados[f'{login}']: #Se a senha atribuida pelo usuario for a mesma pertencente ele será logado
                 limpar()
+                mod_database2('status' , 'Logado')
                 print("Logado com sucesso!")
-                user_atual = login
-                mod_database('user_status' , Fore.LIGHTGREEN_EX + f'Logado como: {user_atual}')
-                sleep(3)
+                input('')
                 break
             else:
                 limpar()
                 print("Senha incorreta!")
-                sleep(2.5)
+                input('')
                 break
         else:
             limpar()
             print("Usuário não cadastrado")   
-            sleep(3)
+            input('')
             break                            
             
 
@@ -98,7 +148,7 @@ def cadastrar_user():
 ───────────────────────────────────
 
   Username: """))
-        if username not in cadastrados:
+        if username not in cadastrados and len(username) > 3 and not username.isspace() and len(username) < 20:
             while True:   
                 limpar()
                 senha = str(input(f"""
@@ -107,21 +157,31 @@ def cadastrar_user():
 
   Username: {username}
   Senha: """))
-                if len(senha) < 3 or senha == '   ':
+                if len(senha) < 3 or senha.isspace():
                     limpar()
                     print("Digite uma senha com mais caracteres!")
-                    sleep(2)
+                    input('')
+                elif len(senha) > 30:
+                    limpar()
+                    print("Máximo permitido: 30 Letras!")
+                    input('')
                 else:
                     limpar()
                     mod_database(username, senha)
                     print("Usúario cadastrado com sucesso!!")
-                    sleep(2)
+                    input('')
                     break
             break
-        else:
+        elif username in cadastrados:
             limpar()
             print("Usuário já possui cadastro!!")
-            sleep(3)
+            input('')
+        elif len(username) < 3 or username.isspace():
+            print("Não possui caracteres suficientes!")
+            input('')
+        elif len(username) > 20:
+            limpar()
+            print("Máximo permitido: 20 Letras!")
 
 #Checa e salva todos os dados na base de dados
 check_database()
@@ -129,38 +189,36 @@ check_database()
 #loop principal
 while True:
     limpar()
-    print(f"""
-{cadastrados['user_status']}""" + Fore.LIGHTWHITE_EX +"""        
+    print(f"""        
+=====================================          
+Status: {database['status']}         
+=====================================
+
 
         Entrar no sistema
 ───────────────────────────────────
 
-    1 ────► Fazer Login
+    1 ────► Menu 
 
-    2 ────► Cadastrar-se
+    2 ────► Fazer Login
 
-    3 ────► Sair
+    3 ────► Cadastrar-se
+
+    4 ────► Sair
 
     0 ────► Fechar aplicação
-
 
 """)
     var = str(input("───► "))
     if var == "1":
-        fazer_login()
+        menu_login()
     elif var == "2":
-        cadastrar_user() 
+        fazer_login()
     elif var == "3":
-        if user_atual != "[VAZIO]":
-            mod_database('user_status' , Fore.LIGHTRED_EX + 'Não logado')
-            user_atual = "[VAZIO]"
-        else:
-            limpar()
-            print("Impossível sair agora, o usuário não possui login!")
-            sleep(3)
-        
+        cadastrar_user() 
+    elif var == "4":
+        if database['status'] == 'Logado':
+            mod_database2('status' , 'Não logado')
     elif var == "0":
         break
     
-
-#agora eu irei fazer uma função que irá permitir o usuario verificar as pessoas cadastradas.
