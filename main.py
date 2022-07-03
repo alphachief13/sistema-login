@@ -5,12 +5,16 @@ from time import sleep
 
 init(convert=True , autoreset=True) #inicializa o colorama (modulo estetica)
 
+
+
+
+
 def limpar():
     system("cls")
 
 #Checa a base de dados
 def check_database():
-    global cadastrados
+    global cadastrados, user_status, user_atual
     #caso já possua o arquivo de cadastrados
     try:
         arquivo_login = open("cadastrados.pck", "rb")
@@ -20,10 +24,13 @@ def check_database():
     except:
         arquivo_login = open("cadastrados.pck", "wb")
         cadastrados = {
-            'Admin' : '123'
+            'Admin' : '123',
+            'user_status' : Fore.LIGHTRED_EX + 'Não logado'
         }
         dump(cadastrados, arquivo_login)
         arquivo_login.close()
+        user_atual = '[VAZIO]'
+        
 
 #Modifica/adiciona os dados na base de dados
 def mod_database(key, value):
@@ -41,8 +48,14 @@ def delete_data(key):
     dump(cadastrados, arquivo_login)
     arquivo_login.close()
     
+def menu_logados():
+    print("""
+
+""")
+    
 #Faz o usuario logar
 def fazer_login():
+    global user_atual
     while True:
         limpar()
         login = str(input("""
@@ -61,6 +74,8 @@ def fazer_login():
             if senha == cadastrados[f'{login}']: #Se a senha atribuida pelo usuario for a mesma pertencente ele será logado
                 limpar()
                 print("Logado com sucesso!")
+                user_atual = login
+                mod_database('user_status' , Fore.LIGHTGREEN_EX + f'Logado como: {user_atual}')
                 sleep(3)
                 break
             else:
@@ -97,6 +112,7 @@ def cadastrar_user():
                     print("Digite uma senha com mais caracteres!")
                     sleep(2)
                 else:
+                    limpar()
                     mod_database(username, senha)
                     print("Usúario cadastrado com sucesso!!")
                     sleep(2)
@@ -105,6 +121,7 @@ def cadastrar_user():
         else:
             limpar()
             print("Usuário já possui cadastro!!")
+            sleep(3)
 
 #Checa e salva todos os dados na base de dados
 check_database()
@@ -112,23 +129,38 @@ check_database()
 #loop principal
 while True:
     limpar()
-    print("""
-         Entrar no sistema
+    print(f"""
+{cadastrados['user_status']}""" + Fore.LIGHTWHITE_EX +"""        
+
+        Entrar no sistema
 ───────────────────────────────────
 
-1 ────► Fazer Login
+    1 ────► Fazer Login
 
-2 ────► Cadastrar-se
+    2 ────► Cadastrar-se
 
-3 ────► Sair
-          
+    3 ────► Sair
+
+    0 ────► Fechar aplicação
+
+
 """)
     var = str(input("───► "))
     if var == "1":
         fazer_login()
     elif var == "2":
-        cadastrar_user()  
+        cadastrar_user() 
     elif var == "3":
+        if user_atual != "[VAZIO]":
+            mod_database('user_status' , Fore.LIGHTRED_EX + 'Não logado')
+            user_atual = "[VAZIO]"
+        else:
+            limpar()
+            print("Impossível sair agora, o usuário não possui login!")
+            sleep(3)
+        
+    elif var == "0":
         break
     
 
+#agora eu irei fazer uma função que irá permitir o usuario verificar as pessoas cadastradas.
