@@ -84,7 +84,7 @@ def deslogar():
 def aba_admin():
     while True:
         limpar()
-        var = str(input('''
+        var = str(input(Fore.LIGHTWHITE_EX + '''
              Aba ADMIN  ( ͡° ͜ʖ ͡°)
 ┌──────────────────────────────────────────┐
 │                                          │
@@ -101,7 +101,7 @@ def aba_admin():
         if var == "1":
             while True:
                 limpar()
-                print("""
+                print(Fore.LIGHTWHITE_EX + """
              Aba ADMIN  ( ͡° ͜ʖ ͡°)
 ┌──────────────────────────────────────────┐
 │                                          │
@@ -119,9 +119,9 @@ def aba_admin():
                     lista_user = list(cadastrados.keys())
                     lista_senha = list(cadastrados.values())
                     for i in range(len(lista_user)):
-                        print(f'=============================\n\nUser: {lista_user[i]}\nSenha: {lista_senha[i]}\n')
+                        print(Fore.LIGHTYELLOW_EX + f'=============================\n\nUser: {lista_user[i]}\nSenha: {lista_senha[i]}\n')
                         sleep(0.1)
-                    print('=============================')
+                    print(Fore.LIGHTYELLOW_EX + '=============================')
                     input('')
                 elif var == "0":
                     break
@@ -138,7 +138,7 @@ def menu_login():
         if database['status'] != 'Não logado':
             while True and database['status'] != 'Não logado':
                 limpar()
-                print("""
+                print(Fore.LIGHTWHITE_EX + """
                        Menu
         ───────────────────────────────────
 
@@ -166,7 +166,7 @@ def menu_login():
                         var = str(input("\n1 ───► Sim\n2 ───► Não\n\n───► "))
                         if var == '1':
                             limpar()
-                            senha = str(input(f"""
+                            senha = str(input(Fore.LIGHTWHITE_EX + f"""
             Digite a senha atual
     ───────────────────────────────────
 
@@ -207,14 +207,14 @@ def menu_login():
                 elif var == "3":
                     while True:
                         limpar()
-                        login = str(input("""
+                        login = str(input(Fore.LIGHTWHITE_EX + """
      Faça o login para apagar usuário
     ───────────────────────────────────
 
       Login: """))
                         if login in cadastrados:
                             limpar()
-                            senha = str(input(f"""
+                            senha = str(input(Fore.LIGHTWHITE_EX + f"""
                Fazer Login
     ───────────────────────────────────
 
@@ -223,12 +223,12 @@ def menu_login():
                             if senha == cadastrados[f'{login}']:
                                 while True:
                                     limpar()
-                                    print("Você tem certeza que deseja excluir esse usuário?")
-                                    var = input('\n1 ──► Sim\n2 ──► Não\n\n ──► ')
+                                    print(Fore.LIGHTRED_EX + "Você tem certeza que deseja excluir esse usuário?")
+                                    var = input(Fore.LIGHTRED_EX + '\n1 ──► Sim\n2 ──► Não\n\n ──► ')
                                     if var == '1':
                                         delete_data(login)
                                         limpar()
-                                        print('Usuário deletado com sucesso!')
+                                        print(Fore.LIGHTBLUE_EX + 'Usuário deletado com sucesso!')
                                         if database['user_atual'] == login:
                                             deslogar()
                                         input('')
@@ -237,12 +237,12 @@ def menu_login():
                                         break
                             else:
                                 limpar()
-                                print("Senha incorreta!")
+                                print(Fore.LIGHTRED_EX + "Senha incorreta!")
                                 input('')
                                 break
                         else:
                             limpar()
-                            print("Usuário não cadastrado")   
+                            print(Fore.LIGHTRED_EX + "Usuário não cadastrado")   
                             input('')
                             break  
                         break              
@@ -251,7 +251,7 @@ def menu_login():
                     break
         else:
             limpar()
-            print("Você precisa estar logado para entrar!")
+            print(Fore.LIGHTRED_EX + "Você precisa estar logado para entrar!")
             input('')
             fazer_login()
             if database['user_atual'] == "Nenhum!":
@@ -261,14 +261,14 @@ def menu_login():
 def fazer_login():
     while True:
         limpar()
-        login = str(input("""
+        login = str(input(Fore.LIGHTWHITE_EX + """
            Fazer Login
 ───────────────────────────────────
 
   Login: """))
         if login in cadastrados: #Se o user estiver no dicionário ele irá permitir a entrada da senha
             limpar()
-            senha = str(input(f"""
+            senha = str(input(Fore.LIGHTWHITE_EX + f"""
            Fazer Login
 ───────────────────────────────────
 
@@ -278,17 +278,17 @@ def fazer_login():
                 limpar()
                 mod_database2('status' , 'Logado')
                 mod_database2('user_atual', f'{login}')
-                print("Logado com sucesso!")
+                print(Fore.LIGHTGREEN_EX + "Logado com sucesso!")
                 input('')
                 break
             else:
                 limpar()
-                print("Senha incorreta!")
+                print(Fore.LIGHTRED_EX + "Senha incorreta!")
                 input('')
                 break
         else:
             limpar()
-            print("Usuário não cadastrado")   
+            print(Fore.LIGHTRED_EX + "Usuário não cadastrado")   
             input('')
             break                            
             
@@ -296,7 +296,7 @@ def fazer_login():
 def cadastrar_user():
     while True:
         limpar()
-        username = str(input("""
+        username = str(input(Fore.LIGHTWHITE_EX + """
           Cadastrar user
 ───────────────────────────────────
 
@@ -304,7 +304,7 @@ def cadastrar_user():
         if username not in cadastrados and len(username) > 3 and not username.isspace() and len(username) < 20:
             while True:   
                 limpar()
-                senha = str(input(f"""
+                senha = str(input(Fore.LIGHTWHITE_EX + f"""
           Cadastrar user
 ───────────────────────────────────
 
@@ -312,29 +312,29 @@ def cadastrar_user():
   Senha: """))
                 if len(senha) < 3 or senha.isspace():
                     limpar()
-                    print("Digite uma senha com mais caracteres!")
+                    print(Fore.LIGHTRED_EX + "Digite uma senha com mais caracteres!")
                     input('')
                 elif len(senha) > 30:
                     limpar()
-                    print("Máximo permitido: 30 Letras!")
+                    print(Fore.LIGHTRED_EX + "Máximo permitido: 30 Letras!")
                     input('')
                 else:
                     limpar()
                     mod_database(username, senha)
-                    print("Usúario cadastrado com sucesso!!")
+                    print(Fore.LIGHTRED_EX + "Usúario cadastrado com sucesso!!")
                     input('')
                     break
             break
         elif username in cadastrados:
             limpar()
-            print("Usuário já possui cadastro!!")
+            print(Fore.LIGHTRED_EX + "Usuário já possui cadastro!!")
             input('')
         elif len(username) < 3 or username.isspace():
-            print("Não possui caracteres suficientes!")
+            print(Fore.LIGHTRED_EX + "Não possui caracteres suficientes!")
             input('')
         elif len(username) > 20:
             limpar()
-            print("Máximo permitido: 20 Letras!")
+            print(Fore.LIGHTRED_EX + "Máximo permitido: 20 Letras!")
 
 #Checa e salva todos os dados na base de dados
 check_database()
